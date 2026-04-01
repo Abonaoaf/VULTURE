@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة اشتراكات العملاء - Vultr</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vultr-blue: #007bff;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 { text-align: center; color: var(--vultr-blue); margin-bottom: 30px; }
+
+        /* حاوية البطاقات لترتيبها بجانب بعضها */
+        .clients-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-right: 4px solid var(--vultr-blue);
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header i { font-size: 1.5rem; color: var(--vultr-blue); }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .label { color: var(--vultr-blue); font-weight: bold; }
+        
+        .countdown-box {
+            background: #252525;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #444;
+        }
+
+        .timer {
+            display: block;
+            font-weight: bold;
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .expired { color: #ff4d4d !important; }
+    </style>
+</head>
+<body>
+
+<h1>لوحة تحكم اشتراكات Vultr</h1>
+
+<div class="clients-container" id="clientsList">
+    </div>
+
+<script>
+    // --- مصفوفة بيانات العملاء (أضف أو احذف عملاء من هنا) ---
+    const clients = [
+        {
+            name: "أحمد محمد",
+            phone: "0501112222",
+            plan: "High Frequency 2GB",
+            pass: "A@123456",
+            link: "https://vultr.com/login",
+            expiry: "2026-04-15T23:59:59"
+        },
+        {
+            name: "سعد خالد",
+            phone: "0554445555",
+            plan: "Cloud Compute 4GB",
+            pass: "S#987654",
+            link: "https://vultr.com/login",
+            expiry: "2026-05-10T12:00:00"
+        },
+        {
+            name: "فيصل العتيبي",
+            phone: "0567778888",
+            plan: "Bare Metal",
+            pass: "F*554433",
+            link: "https://vultr.com/login",
+            expiry: "2026-03-01T00:00:00" // مثال لتاريخ منتهي
+        }
+    ];
+
+    function renderClients() {
+        const container = document.getElementById('clientsList');
+        container.innerHTML = clients.map((client, index) => `
+            <div class="card">
+                <div class="header">
+                    <i class="fas fa-user-circle"></i>
+                    <h3>${client.name}</h3>
+                </div>
+                <div class="info-item"><span class="label">الجوال:</span> <span>${client.phone}</span></div>
+                <div class="info-item"><span class="label">الاشتراك:</span> <span>${client.plan}</span></div>
+                <div class="info-item"><span class="label">كلمة السر:</span> <span>${client.pass}</span></div>
+                <div class="info-item"><span class="label">الرابط:</span> <a href="${client.link}" target="_blank">دخول</a></div>
+                <div class="info-item"><span class="label">النهاية:</span> <span>${client.expiry.split('T')[0]}</span></div>
+                
+                <div class="countdown-box">
+                    <span>متبقي على الانتهاء:</span>
+                    <span class="timer" id="timer-${index}">جاري الحساب...</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateTimers() {
+        clients.forEach((client, index) => {
+            const timerElement = document.getElementById(`timer-${index}`);
+            const expiryTime = new Date(client.expiry).getTime();
+            const now = new Date().getTime();
+            const distance = expiryTime - now;
+
+            if (distance < 0) {
+                timerElement.innerHTML = "منتهي الصلاحية";
+                timerElement.classList.add('expired');
+            } else {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                timerElement.innerHTML = `${days} يوم و ${hours}:${minutes}:${seconds}`;
+            }
+        });
+    }
+
+    // التشغيل
+    renderClients();
+    setInterval(updateTimers, 1000);
+    updateTimers(); // لتحديث العداد فور تحميل الصفحة
+</script>
+
+</body>
+</html>
