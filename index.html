@@ -3,72 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل الاشتراك</title>
+    <title>مولد روابط المشتركين | خاص</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #007bff; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 40px 20px; }
-        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; overflow: hidden; border: 1px solid #eee; }
-        .header { background: var(--primary); color: white; padding: 30px; text-align: center; }
-        .header i { font-size: 3rem; margin-bottom: 10px; }
-        .body { padding: 25px; }
-        .item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
-        .label { color: #888; font-size: 0.9rem; }
-        .value { font-weight: 600; color: #333; }
-        .timer-box { background: #fff5f5; border: 1px solid #fed7d7; padding: 15px; border-radius: 12px; text-align: center; margin-top: 20px; }
-        .timer-val { display: block; font-weight: bold; color: #c53030; font-size: 1.2rem; margin-top: 5px; }
+        :root { --primary: #28a745; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; }
+        .admin-card { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 25px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #218838; }
+        .result-box { margin-top: 25px; padding: 20px; background: #e9f7ef; border-radius: 10px; display: none; border: 1px dashed var(--primary); }
+        .link-text { word-break: break-all; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin: 10px 0; font-family: monospace; font-size: 0.9rem; }
+        .copy-btn { background: #007bff; margin-top: 10px; }
+        .copy-btn:hover { background: #0069d9; }
     </style>
 </head>
 <body>
 
-<div class="card" id="mainCard" style="display:none;">
-    <div class="header">
-        <i class="fas fa-shield-check"></i>
-        <h2 id="view-name">جاري التحميل...</h2>
+<div class="admin-card">
+    <h2><i class="fas fa-plus-circle"></i> إضافة عميل جديد</h2>
+    
+    <div class="form-group">
+        <label>اسم العميل:</label>
+        <input type="text" id="name" placeholder="مثال: عبدالعزيز الفيفي">
     </div>
-    <div class="body">
-        <div class="item"><span class="label">رقم الجوال:</span> <span class="value" id="view-phone">-</span></div>
-        <div class="item"><span class="label">نوع الاشتراك:</span> <span class="value" id="view-plan">-</span></div>
-        <div class="item"><span class="label">كلمة السر:</span> <span class="value" id="view-pass">-</span></div>
-        <div class="item"><span class="label">رابط الدخول:</span> <span class="value"><a id="view-link" href="#" target="_blank">اضغط هنا</a></span></div>
-        
-        <div class="timer-box">
-            <span class="label">متبقي على نهاية الاشتراك:</span>
-            <span class="timer-val" id="timer">-- : -- : --</span>
-        </div>
+    
+    <div class="form-group">
+        <label>رقم الجوال:</label>
+        <input type="text" id="phone" placeholder="05xxxxxxxx">
+    </div>
+    
+    <div class="form-group">
+        <label>اسم الاشتراك:</label>
+        <input type="text" id="plan" placeholder="Vultr Cloud Compute">
+    </div>
+    
+    <div class="form-group">
+        <label>الرقم السري:</label>
+        <input type="text" id="pass" placeholder="A12345678">
+    </div>
+
+    <div class="form-group">
+        <label>رابط الدخول:</label>
+        <input type="text" id="link" value="https://vultr.com/login">
+    </div>
+
+    <div class="form-group">
+        <label>تاريخ نهاية الاشتراك:</label>
+        <input type="date" id="expiry">
+    </div>
+
+    <button onclick="generateLink()">حفظ وإنشاء الرابط <i class="fas fa-magic"></i></button>
+
+    <div class="result-box" id="resultBox">
+        <strong>✅ تم إنشاء الرابط بنجاح:</strong>
+        <div class="link-text" id="finalLink"></div>
+        <button class="copy-btn" onclick="copyLink()">نسخ الرابط لإرساله للعميل <i class="fas fa-copy"></i></button>
     </div>
 </div>
 
 <script>
-    // وظيفة لقراءة البيانات من الرابط (URL)
-    const params = new URLSearchParams(window.location.search);
-    
-    if(params.has('name')) {
-        document.getElementById('mainCard').style.display = 'block';
-        document.getElementById('view-name').innerText = params.get('name');
-        document.getElementById('view-phone').innerText = params.get('phone');
-        document.getElementById('view-plan').innerText = params.get('plan');
-        document.getElementById('view-pass').innerText = params.get('pass');
-        document.getElementById('view-link').href = params.get('link');
+    function generateLink() {
+        // --- هام جداً: استبدل هذا الرابط برابط صفحة العميل الخاصة بك على GitHub ---
+        const baseUrl = window.location.href.replace('admin.html', 'index.html');
+        
+        const name = encodeURIComponent(document.getElementById('name').value);
+        const phone = encodeURIComponent(document.getElementById('phone').value);
+        const plan = encodeURIComponent(document.getElementById('plan').value);
+        const pass = encodeURIComponent(document.getElementById('pass').value);
+        const link = encodeURIComponent(document.getElementById('link').value);
+        const expiry = document.getElementById('expiry').value;
 
-        // العداد التنازلي
-        const expiryDate = new Date(params.get('expiry')).getTime();
-        setInterval(() => {
-            const now = new Date().getTime();
-            const diff = expiryDate - now;
-            if (diff < 0) {
-                document.getElementById('timer').innerText = "انتهى الاشتراك";
-            } else {
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
-                document.getElementById('timer').innerText = `${d} يوم و ${h}:${m}:${s}`;
-            }
-        }, 1000);
-    } else {
-        document.body.innerHTML = "<h2>خطأ: لا توجد بيانات لهذا الرابط</h2>";
+        if(!name || !expiry) {
+            alert("يرجى تعبئة الاسم والتاريخ على الأقل");
+            return;
+        }
+
+        const finalUrl = `${baseUrl}?name=${name}&phone=${phone}&plan=${plan}&pass=${pass}&link=${link}&expiry=${expiry}`;
+        
+        document.getElementById('finalLink').innerText = finalUrl;
+        document.getElementById('resultBox').style.display = 'block';
+    }
+
+    function copyLink() {
+        const linkText = document.getElementById('finalLink').innerText;
+        navigator.clipboard.writeText(linkText).then(() => {
+            alert("تم نسخ الرابط! يمكنك الآن إرساله للعميل عبر الواتساب أو الإيميل.");
+        });
     }
 </script>
+
 </body>
 </html>
