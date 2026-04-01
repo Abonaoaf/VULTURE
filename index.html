@@ -3,164 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة اشتراكات Vultr</title>
+    <title>نظام إدارة المشتركين | عبدالعزيز الفيفي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; --whatsapp: #25d366; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; min-height: 100vh; align-items: flex-start; }
-        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 450px; overflow: hidden; border: 1px solid #eee; display: none; margin-bottom: 50px; }
+        :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; --whatsapp: #25d366; --danger: #dc3545; --warning: #ff9800; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
         
-        /* صفحة العميل */
+        /* واجهة العميل */
+        .client-view { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; overflow: hidden; display: none; align-self: center; }
         .client-header { background: var(--primary); color: white; padding: 25px; text-align: center; }
-        .client-header i { font-size: 2.5rem; margin-bottom: 10px; }
         .info-body { padding: 20px; }
-        .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #edf2f7; }
-        .info-content { display: flex; flex-direction: column; flex-grow: 1; margin-right: 10px; }
-        .label { color: #888; font-size: 0.8rem; margin-bottom: 2px; }
-        .value { font-weight: 600; color: #333; font-size: 0.95rem; word-break: break-all; }
+        .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
+        .info-content { display: flex; flex-direction: column; flex-grow: 1; }
+        .label { color: #888; font-size: 0.75rem; }
+        .value { font-weight: 600; color: #333; font-size: 0.9rem; }
+        .copy-btn { background: none; border: none; color: var(--primary); cursor: pointer; padding: 5px; font-size: 1rem; }
+        .timer-box { background: #fff8e1; border: 1px solid #ffe082; padding: 12px; border-radius: 10px; text-align: center; margin: 15px 0; }
+        .timer-val { display: block; font-weight: bold; color: #d84315; font-size: 1.2rem; }
+        .btn-contact { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 8px; color: white; font-size: 0.85rem; }
+
+        /* لوحة التحكم (لك) */
+        .admin-panel { width: 100%; max-width: 1000px; display: none; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-bottom: 3px solid var(--primary); }
+        .btn-add { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; }
+        .btn-add:hover { background: #218838; transform: scale(1.05); }
         
-        .copy-btn { background: none; border: none; color: var(--primary); cursor: pointer; padding: 8px; font-size: 1.1rem; transition: 0.2s; }
-        .copy-btn:hover { color: #0056b3; transform: scale(1.1); }
+        .clients-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .client-item { background: white; padding: 20px; border-radius: 18px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; border: 1px solid #eee; }
+        .client-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .client-item h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.2rem; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; }
+        
+        /* عداد لوحة التحكم */
+        .admin-timer { background: #f0f4f8; padding: 10px; border-radius: 10px; margin: 15px 0; text-align: center; border: 1px solid #e2e8f0; }
+        .admin-timer span { font-size: 0.8rem; color: #666; display: block; }
+        .admin-timer b { color: #2d3748; font-family: monospace; font-size: 1rem; }
+        .expired-text { color: var(--danger) !important; font-weight: bold; }
 
-        .timer-box { background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 12px; text-align: center; margin: 15px 0; }
-        .timer-val { display: block; font-weight: bold; color: #d84315; font-size: 1.3rem; margin-top: 5px; }
+        .actions { display: flex; gap: 8px; margin-top: 15px; }
+        .btn-sm { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-edit { background: #ebf8ff; color: #3182ce; }
+        .btn-del { background: #fff5f5; color: var(--danger); }
+        .btn-link { background: #f0fff4; color: var(--success); }
 
-        /* أزرار التواصل */
-        .support-section { margin-top: 20px; border-top: 2px dashed #eee; padding-top: 20px; }
-        .btn-contact { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-bottom: 10px; transition: 0.3s; color: white; font-size: 0.9rem; }
-        .btn-wa { background: var(--whatsapp); }
-        .btn-channel { background: #0088cc; }
-        .btn-contact:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* صفحة الإدارة */
-        .admin-box { padding: 30px; width: 100%; max-width: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .admin-box h2 { text-align: center; color: var(--primary); margin-top: 0; }
-        .form-group { margin-bottom: 12px; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 1rem; }
-        .btn-gen { background: var(--success); color: white; }
-        .btn-copy-main { background: var(--primary); color: white; display: none; margin-top: 15px; }
-        #resultLink { word-break: break-all; font-size: 0.8rem; background: #f1f1f1; padding: 10px; border-radius: 5px; margin-top: 10px; display: none; border: 1px solid #ccc; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: #555; font-weight: bold; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
     </style>
 </head>
 <body>
 
-<div class="card" id="clientCard">
-    <div class="client-header">
-        <i class="fas fa-id-card"></i>
-        <h2 id="v-name" style="margin:0">بيانات الاشتراك</h2>
-    </div>
+<div id="clientView" class="client-view">
+    <div class="client-header"><i class="fas fa-id-card"></i><h2 id="v-name" style="margin:5px 0"></h2></div>
     <div class="info-body">
-        <div class="info-row">
-            <div class="info-content"><span class="label">الجوال</span><span class="value" id="v-phone"></span></div>
-            <button class="copy-btn" onclick="copyText('v-phone')"><i class="far fa-copy"></i></button>
-        </div>
-        <div class="info-row">
-            <div class="info-content"><span class="label">نوع الاشتراك</span><span class="value" id="v-plan"></span></div>
-            <button class="copy-btn" onclick="copyText('v-plan')"><i class="far fa-copy"></i></button>
-        </div>
-        <div class="info-row">
-            <div class="info-content"><span class="label">كلمة السر</span><span class="value" id="v-pass"></span></div>
-            <button class="copy-btn" onclick="copyText('v-pass')"><i class="far fa-copy"></i></button>
-        </div>
-        <div class="info-row">
-            <div class="info-content"><span class="label">رابط المنصة</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary)">فتح الرابط</a></span></div>
-            <button class="copy-btn" onclick="copyLinkOnly()"><i class="fas fa-link"></i></button>
-        </div>
-
-        <div class="timer-box">
-            <span class="label">متبقي على الانتهاء:</span>
-            <span class="timer-val" id="timer">-- : -- : --</span>
-        </div>
-
-        <div class="support-section">
-            <a href="https://wa.me/966594393012" class="btn-contact btn-wa" target="_blank">
-                <i class="fab fa-whatsapp"></i> الدعم الفني (واتساب)
-            </a>
-            <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact btn-channel" target="_blank">
-                <i class="fas fa-bullhorn"></i> انضم لقناتنا على الواتساب
-            </a>
-        </div>
+        <div class="info-row"><div class="info-content"><span class="label">الجوال</span><span class="value" id="v-phone"></span></div><button class="copy-btn" onclick="copyTag('v-phone')"><i class="far fa-copy"></i></button></div>
+        <div class="info-row"><div class="info-content"><span class="label">نوع الاشتراك</span><span class="value" id="v-plan"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
+        <div class="info-row"><div class="info-content"><span class="label">كلمة السر</span><span class="value" id="v-pass"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
+        <div class="info-row"><div class="info-content"><span class="label">الرابط</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary)">فتح المنصة</a></span></div><button class="copy-btn" onclick="copyLink()"><i class="fas fa-link"></i></button></div>
+        <div class="timer-box"><span class="label">الوقت المتبقي لانتهاء اشتراكك:</span><span class="timer-val" id="timer">-- : -- : --</span></div>
+        <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp)" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني المباشر</a>
+        <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact" style="background:#0088cc;" target="_blank"><i class="fas fa-bullhorn"></i> تابع جديدنا على القناة</a>
     </div>
 </div>
 
-<div class="admin-box" id="adminBox" style="display:none;">
-    <h2><i class="fas fa-user-plus"></i> إضافة مشترك جديد</h2>
-    <div class="form-group"><input type="text" id="in-name" placeholder="اسم المشترك"></div>
-    <div class="form-group"><input type="text" id="in-phone" placeholder="رقم جواله"></div>
-    <div class="form-group"><input type="text" id="in-plan" placeholder="باقة الاشتراك"></div>
-    <div class="form-group"><input type="text" id="in-pass" placeholder="كلمة المرور"></div>
-    <div class="form-group"><input type="text" id="in-link" value="https://vultr.com/login"></div>
-    <div class="form-group"><label>تاريخ نهاية الاشتراك:</label><input type="date" id="in-expiry"></div>
-    
-    <button class="btn-action btn-gen" onclick="generate()">حفظ وإنشاء الرابط</button>
-    <div id="resultLink"></div>
-    <button class="btn-action btn-copy-main" id="copyBtn" onclick="copyMainLink()">نسخ الرابط النهائي</button>
+<div id="adminPanel" class="admin-panel">
+    <div class="admin-header">
+        <h2 style="margin:0;"><i class="fas fa-users-cog" style="color:var(--primary)"></i> إدارة المشتركين</h2>
+        <button class="btn-add" onclick="openModal()"><i class="fas fa-plus-circle"></i> إضافة مشترك جديد</button>
+    </div>
+    <div id="clientsList" class="clients-list"></div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle" style="margin-top:0; color:var(--primary)">بيانات المشترك</h3>
+        <input type="hidden" id="editIndex">
+        <div class="form-group"><label>اسم العميل</label><input type="text" id="in-name" placeholder="الاسم الثلاثي"></div>
+        <div class="form-group"><label>رقم الجوال</label><input type="text" id="in-phone" placeholder="05xxxxxxxx"></div>
+        <div class="form-group"><label>نوع الاشتراك</label><input type="text" id="in-plan" placeholder="مثال: فولتشر سنوي"></div>
+        <div class="form-group"><label>كلمة السر</label><input type="text" id="in-pass"></div>
+        <div class="form-group"><label>تاريخ نهاية الاشتراك</label><input type="date" id="in-expiry"></div>
+        <div style="display:flex; gap:12px; margin-top:25px;">
+            <button class="btn-add" onclick="saveClient()" style="flex:2">حفظ المشترك</button>
+            <button onclick="closeModal()" style="flex:1; border:none; border-radius:10px; cursor:pointer; background:#eee; font-weight:bold;">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <script>
+    let clients = JSON.parse(localStorage.getItem('myClients')) || [];
     const params = new URLSearchParams(window.location.search);
 
-    if (params.has('name')) {
-        document.getElementById('clientCard').style.display = 'block';
+    if (params.has('name')) { showClientView(); } 
+    else { showAdminPanel(); }
+
+    function showClientView() {
+        document.getElementById('clientView').style.display = 'block';
         document.getElementById('v-name').innerText = "مرحباً: " + params.get('name');
         document.getElementById('v-phone').innerText = params.get('phone');
         document.getElementById('v-plan').innerText = params.get('plan');
         document.getElementById('v-pass').innerText = params.get('pass');
-        document.getElementById('v-link').href = params.get('link');
+        document.getElementById('v-link').href = "https://vultr.com/login";
+        startGlobalTimer(params.get('expiry'), 'timer');
+    }
 
-        const expiry = new Date(params.get('expiry')).getTime();
+    function showAdminPanel() {
+        document.getElementById('adminPanel').style.display = 'block';
+        renderClients();
+        // تحديث العدادات في لوحة الإدارة كل ثانية
+        setInterval(updateAdminTimers, 1000);
+    }
+
+    function renderClients() {
+        const list = document.getElementById('clientsList');
+        if(clients.length === 0) {
+            list.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color:#999; margin-top:50px;">لا يوجد مشتركون حالياً، ابدأ بإضافة أول عميل.</p>`;
+            return;
+        }
+        list.innerHTML = clients.map((c, i) => `
+            <div class="client-item">
+                <h3>${c.name}</h3>
+                <div style="font-size:0.85rem; color:#666;">
+                    <div><i class="fas fa-phone-alt"></i> ${c.phone}</div>
+                    <div><i class="fas fa-layer-group"></i> ${c.plan}</div>
+                </div>
+                <div class="admin-timer">
+                    <span>متبقي على الانتهاء:</span>
+                    <b id="admin-timer-${i}" data-expiry="${c.expiry}">جاري الحساب...</b>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-link" onclick="generateAndCopy(${i})"><i class="fas fa-share-alt"></i> الرابط</button>
+                    <button class="btn-sm btn-edit" onclick="editClient(${i})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-sm btn-del" onclick="deleteClient(${i})"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        `).join('');
+        updateAdminTimers();
+    }
+
+    function updateAdminTimers() {
+        clients.forEach((c, i) => {
+            const el = document.getElementById(`admin-timer-${i}`);
+            if(!el) return;
+            const diff = new Date(c.expiry).getTime() - new Date().getTime();
+            if (diff <= 0) {
+                el.innerText = "منتهي الصلاحية";
+                el.className = "expired-text";
+            } else {
+                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+                el.innerText = `${d}ي ${h}:${m}:${s}`;
+                el.className = "";
+            }
+        });
+    }
+
+    function startGlobalTimer(expiryStr, elementId) {
+        const target = new Date(expiryStr).getTime();
+        const el = document.getElementById(elementId);
         setInterval(() => {
             const now = new Date().getTime();
-            const diff = expiry - now;
-            if (diff <= 0) {
-                document.getElementById('timer').innerText = "منتهي";
-            } else {
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
-                document.getElementById('timer').innerText = `${d} يوم و ${h}:${m}:${s}`;
+            const diff = target - now;
+            if (diff <= 0) el.innerText = "منتهي";
+            else {
+                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+                el.innerText = `${d} يوم و ${h}:${m}:${s}`;
             }
         }, 1000);
-
-    } else {
-        document.getElementById('adminBox').style.display = 'block';
     }
 
-    // وظائف النسخ
-    function copyText(id) {
-        const text = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(text);
-        alert("تم نسخ: " + text);
-    }
-
-    function copyLinkOnly() {
-        const link = document.getElementById('v-link').href;
-        navigator.clipboard.writeText(link);
-        alert("تم نسخ رابط المنصة");
-    }
-
-    function generate() {
-        const url = window.location.origin + window.location.pathname;
-        const p = {
-            name: encodeURIComponent(document.getElementById('in-name').value),
-            phone: encodeURIComponent(document.getElementById('in-phone').value),
-            plan: encodeURIComponent(document.getElementById('in-plan').value),
-            pass: encodeURIComponent(document.getElementById('in-pass').value),
-            link: encodeURIComponent(document.getElementById('in-link').value),
+    // وظائف الإدارة العامة
+    function saveClient() {
+        const idx = parseInt(document.getElementById('editIndex').value);
+        const data = {
+            name: document.getElementById('in-name').value,
+            phone: document.getElementById('in-phone').value,
+            plan: document.getElementById('in-plan').value,
+            pass: document.getElementById('in-pass').value,
             expiry: document.getElementById('in-expiry').value
         };
-        const finalUrl = `${url}?name=${p.name}&phone=${p.phone}&plan=${p.plan}&pass=${p.pass}&link=${p.link}&expiry=${p.expiry}`;
-        document.getElementById('resultLink').innerText = finalUrl;
-        document.getElementById('resultLink').style.display = 'block';
-        document.getElementById('copyBtn').style.display = 'block';
+        if(!data.name || !data.expiry) { alert("يرجى إكمال البيانات الأساسية"); return; }
+        if (idx === -1) clients.push(data); else clients[idx] = data;
+        localStorage.setItem('myClients', JSON.stringify(clients));
+        renderClients(); closeModal();
     }
 
-    function copyMainLink() {
-        navigator.clipboard.writeText(document.getElementById('resultLink').innerText);
-        alert("تم نسخ الرابط! أرسله الآن للعميل.");
+    function deleteClient(i) { if(confirm("حذف المشترك نهائياً؟")) { clients.splice(i,1); localStorage.setItem('myClients', JSON.stringify(clients)); renderClients(); } }
+    function editClient(i) {
+        openModal();
+        document.getElementById('modalTitle').innerText = "تعديل مشترك";
+        document.getElementById('editIndex').value = i;
+        ['name','phone','plan','pass','expiry'].forEach(id => document.getElementById('in-'+id).value = clients[i][id]);
     }
+    function generateAndCopy(i) {
+        const c = clients[i];
+        const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(c.name)}&phone=${encodeURIComponent(c.phone)}&plan=${encodeURIComponent(c.plan)}&pass=${encodeURIComponent(c.pass)}&expiry=${c.expiry}`;
+        navigator.clipboard.writeText(link);
+        alert("تم نسخ رابط العميل: " + c.name);
+    }
+    function openModal() { document.getElementById('editIndex').value = "-1"; ['name','phone','plan','pass','expiry'].forEach(id => document.getElementById('in-'+id).value = ''); document.getElementById('modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function copyTag(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert("تم النسخ!"); }
+    function copyLink() { navigator.clipboard.writeText("https://vultr.com/login"); alert("تم نسخ الرابط!"); }
 </script>
 </body>
 </html>
