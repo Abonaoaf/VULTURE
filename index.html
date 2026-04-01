@@ -53,7 +53,6 @@
         <div class="info-row"><div><span class="label">تاريخ البداية</span><br><span class="value" id="v-start"></span></div></div>
         <div class="info-row"><div><span class="label">تاريخ النهاية</span><br><span class="value" id="v-end"></span></div></div>
         <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-        <div class="info-row"><div><span class="label">الجوال</span><br><span id="v-phone" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-phone')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div><span class="label">اسم المستخدم</span><br><span id="v-plan" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div><span class="label">كلمة السر</span><br><span id="v-pass" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
         
@@ -67,6 +66,10 @@
         
         <div class="timer-section"><span class="label">الوقت المتبقي للانتهاء</span><div id="timer" class="timer-display"></div></div>
         
+        <a href="apps.html" class="btn-contact" style="background: #4338ca; margin-bottom: 15px; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);" target="_self">
+            <i class="fas fa-th-large"></i> صفحة تحميل التطبيقات
+        </a>
+
         <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp);" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني المباشر</a>
         <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact" style="background:var(--channel);" target="_blank"><i class="fas fa-bullhorn"></i> تابعنا على قناة قبل الحدث </a>
     </div>
@@ -142,10 +145,7 @@
         document.getElementById('v-pass').innerText = c.pass;
         document.getElementById('v-start').innerText = c.start;
         document.getElementById('v-end').innerText = c.expiry;
-        
-        // تعديل: وضع الرابط كنص فقط
         document.getElementById('v-link-text').innerText = c.link || "لم يتم تعيين رابط";
-        
         setInterval(() => { document.getElementById('timer').innerHTML = getTimeHTML(calculateTime(c.expiry)); }, 1000);
     }
 
@@ -224,13 +224,7 @@
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function showLoading(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
     function copyTag(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert("تم النسخ!"); }
-    
-    // تعديل دالة النسخ لتأخذ النص من العنصر الجديد
-    function copyClientLink() { 
-        const text = document.getElementById('v-link-text').innerText;
-        navigator.clipboard.writeText(text); 
-        alert("تم نسخ رابط الاشتراك بنجاح!"); 
-    }
+    function copyClientLink() { const text = document.getElementById('v-link-text').innerText; navigator.clipboard.writeText(text); alert("تم نسخ رابط الاشتراك بنجاح!"); }
 
     init();
 </script>
