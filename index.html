@@ -56,7 +56,7 @@
         <div class="info-row"><div class="info-content"><span class="label">تاريخ بداية الاشتراك</span><span class="value" id="v-start"></span></div></div>
         <div class="info-row"><div class="info-content"><span class="label">تاريخ نهاية الاشتراك</span><span class="value" id="v-end"></span></div></div>
         <div class="info-row"><div class="info-content"><span class="label">الجوال</span><span class="value" id="v-phone"></span></div><button class="copy-btn" onclick="copyTag('v-phone')"><i class="far fa-copy"></i></button></div>
-        <div class="info-row"><div class="info-content"><span class="label">نوع الاشتراك</span><span class="value" id="v-plan"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
+        <div class="info-row"><div class="info-content"><span class="label">اسم المستخدم</span><span class="value" id="v-plan"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div class="info-content"><span class="label">كلمة السر</span><span class="value" id="v-pass"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div class="info-content"><span class="label">رابط المنصة</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary)">فتح الرابط</a></span></div><button class="copy-btn" onclick="copyClientLink()"><i class="fas fa-link"></i></button></div>
         
@@ -81,7 +81,7 @@
         <input type="hidden" id="editIndex">
         <div class="form-group"><label>اسم العميل</label><input type="text" id="in-name"></div>
         <div class="form-group"><label>رقم الجوال</label><input type="text" id="in-phone"></div>
-        <div class="form-group"><label>نوع الاشتراك</label><input type="text" id="in-plan"></div>
+        <div class="form-group"><label>اسم المستخدم</label><input type="text" id="in-plan" placeholder="مثال: Admin_Vultr"></div>
         <div class="form-group"><label>كلمة السر</label><input type="text" id="in-pass"></div>
         <div class="form-group"><label>رابط الدخول المخصص</label><input type="text" id="in-link" placeholder="https://..."></div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -128,6 +128,7 @@
                 <div class="admin-dates">
                     <div><b>بداية:</b> ${c.start}</div>
                     <div><b>نهاية:</b> ${c.expiry}</div>
+                    <div><b>المستخدم:</b> ${c.plan}</div>
                 </div>
                 <div class="admin-timer">
                     <b id="admin-timer-${i}" data-expiry="${c.expiry}">...</b>
