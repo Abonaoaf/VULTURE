@@ -57,8 +57,8 @@
         
         <div class="timer-section"><span class="label">الوقت المتبقي للانتهاء</span><div id="timer" class="timer-display"></div></div>
         
-        <a href="https://abonaoaf.github.io/VULTURE/apps.html" class="btn-contact" style="background: #4338ca; border: 2px solid #fff;">
-            <i class="fas fa-th-large"></i> صفحة تحميل التطبيقات
+        <a href="https://abonaoaf.github.io/apps/" class="btn-contact" style="background: #4338ca; border: 2px solid #fff;">
+            <i class="fas fa-th-large"></i> متجر تطبيقات الفيفي
         </a>
         
         <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp);" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني المباشر</a>
@@ -99,14 +99,9 @@
             const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
             const data = await res.json();
             
-            // استعادة المشتركين بذكاء سواء كانت البيانات مصفوفة قديمة أو كائن جديد
-            if (Array.isArray(data.record)) {
-                fullData.clients = data.record;
-            } else if (data.record.clients) {
-                fullData = data.record;
-            } else {
-                fullData.clients = [];
-            }
+            if (Array.isArray(data.record)) { fullData.clients = data.record; } 
+            else if (data.record.clients) { fullData = data.record; } 
+            else { fullData.clients = []; }
 
             const user = params.get('user');
             if (user) { loadClientView(decodeURIComponent(user)); } else { showAdminPanel(); }
