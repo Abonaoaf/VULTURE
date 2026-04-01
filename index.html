@@ -8,16 +8,13 @@
     <style>
         :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; --whatsapp: #25d366; --danger: #dc3545; --text: #2d3748; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; color: var(--text); }
-        
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         .timer-display { display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap; direction: ltr; }
         .time-unit { background: white; padding: 8px 4px; border-radius: 8px; border: 1px solid #e2e8f0; min-width: 42px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
         .time-num { display: block; font-size: 1rem; font-weight: bold; color: var(--primary); line-height: 1; }
         .time-lab { font-size: 0.6rem; color: #718096; margin-top: 3px; display: block; font-weight: bold; }
-
         .client-view { background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; max-width: 420px; overflow: hidden; display: none; align-self: center; border: 1px solid rgba(0,0,0,0.05); }
         .client-header { background: linear-gradient(135deg, var(--primary), #0056b3); color: white; padding: 25px; text-align: center; }
         .info-body { padding: 20px; }
@@ -26,7 +23,6 @@
         .value { font-weight: 600; color: #1e293b; font-size: 0.9rem; }
         .copy-btn { background: white; border: 1px solid #e2e8f0; color: var(--primary); cursor: pointer; padding: 6px 10px; border-radius: 8px; }
         .timer-section { background: #f1f5f9; padding: 15px; border-radius: 16px; text-align: center; margin: 15px 0; border: 1px solid #e2e8f0; }
-
         .admin-panel { width: 100%; max-width: 1100px; display: none; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .btn-add { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
@@ -37,7 +33,6 @@
         .btn-edit { background: #f0f7ff; color: #007bff; }
         .btn-del { background: #fff1f2; color: #e11d48; }
         .btn-link { background: #f0fdf4; color: #16a34a; border: 1px solid #16a34a; }
-
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -61,7 +56,7 @@
         <div class="info-row"><div><span class="label">كلمة السر</span><br><span id="v-pass" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div><span class="label">رابط المنصة</span><br><a id="v-link" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:bold;">دخول المنصة</a></div><button class="copy-btn" onclick="copyClientLink()"><i class="fas fa-link"></i></button></div>
         <div class="timer-section"><span class="label">الوقت المتبقي للانتهاء</span><div id="timer" class="timer-display"></div></div>
-        <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp); display:flex; align-items:center; justify-content:center; color:white; padding:12px; border-radius:12px; text-decoration:none; font-weight:bold;"><i class="fab fa-whatsapp"></i>&nbsp; الدعم الفني</a>
+        <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp); display:flex; align-items:center; justify-content:center; color:white; padding:12px; border-radius:12px; text-decoration:none; font-weight:bold; margin-top:15px;" target="_blank"><i class="fab fa-whatsapp"></i>&nbsp; الدعم الفني عبر الواتساب</a>
     </div>
 </div>
 
@@ -94,10 +89,8 @@
 </div>
 
 <script>
-    // --- تم وضع مفاتيحك السحابية هنا بنجاح يا أبا نواف ---
     const BIN_ID = '69ccd25636566621a86b0b49'; 
     const API_KEY = '$2a$10$tF3fZ9rbdTzLIljwr83BlOtuLCKngwBUbeK9//NpVH8Mwkfh4GTmu';
-    // --------------------------------------------------
 
     let clients = [];
     const params = new URLSearchParams(window.location.search);
@@ -109,14 +102,8 @@
                 headers: { 'X-Master-Key': API_KEY }
             });
             const data = await res.json();
-            // تصفية البيانات للتأكد من جلب مصفوفة المشتركين فقط
             clients = Array.isArray(data.record) ? data.record : [];
-            
-            if (params.has('user')) {
-                loadClientView(params.get('user'));
-            } else {
-                showAdminPanel();
-            }
+            if (params.has('user')) { loadClientView(params.get('user')); } else { showAdminPanel(); }
         } catch (e) { alert("خطأ في الاتصال بالسحابة!"); }
         showLoading(false);
     }
@@ -135,8 +122,7 @@
 
     function loadClientView(userId) {
         const c = clients.find(item => item.name === userId);
-        if (!c) { document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h1>المشترك غير موجود</h1><p>تأكد من الرابط أو تواصل مع الإدارة</p></div>"; return; }
-        
+        if (!c) { document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h1>المشترك غير موجود</h1></div>"; return; }
         document.getElementById('clientView').style.display = 'block';
         document.getElementById('v-name').innerText = "مرحباً: " + c.name;
         document.getElementById('v-phone').innerText = c.phone;
@@ -145,10 +131,7 @@
         document.getElementById('v-start').innerText = c.start;
         document.getElementById('v-end').innerText = c.expiry;
         document.getElementById('v-link').href = c.link || "#";
-        
-        setInterval(() => {
-            document.getElementById('timer').innerHTML = getTimeHTML(calculateTime(c.expiry));
-        }, 1000);
+        setInterval(() => { document.getElementById('timer').innerHTML = getTimeHTML(calculateTime(c.expiry)); }, 1000);
     }
 
     function calculateTime(expiry) {
@@ -179,12 +162,11 @@
         list.innerHTML = clients.map((c, i) => `
             <div class="client-item">
                 <h3 style="color:var(--primary); margin-top:0;">${c.name}</h3>
-                <div class="admin-dates" style="font-size:0.8rem; line-height:1.5; background:#f8fafc; padding:10px; border-radius:10px;">
+                <div class="admin-dates" style="background:#f8fafc; padding:10px; border-radius:10px;">
                     <div><b>النهاية:</b> ${c.expiry}</div>
-                    <div><b>المستخدم:</b> ${c.plan}</div>
                     <div><b>الجوال:</b> ${c.phone}</div>
                 </div>
-                <div id="admin-timer-${i}" class="timer-display" style="transform: scale(0.9);"></div>
+                <div id="admin-timer-${i}" class="timer-display" style="transform: scale(0.85);"></div>
                 <div class="actions">
                     <button class="btn-sm btn-link" onclick="copyClientUrl('${c.name}')"><i class="fas fa-link"></i> الرابط الثابت</button>
                     <button class="btn-sm btn-edit" onclick="editClient(${i})"><i class="fas fa-edit"></i></button>
@@ -205,18 +187,16 @@
             start: document.getElementById('in-start').value,
             expiry: document.getElementById('in-expiry').value
         };
-        if(!data.name || !data.expiry) return alert("الاسم وتاريخ الانتهاء ضروريان!");
-        
+        if(!data.name || !data.expiry) return alert("الاسم والتاريخ ضروريان!");
         if (idx === -1) clients.push(data); else clients[idx] = data;
         await syncToCloud();
         renderClients(); closeModal();
-        alert("تم الحفظ والمزامنة بنجاح!");
     }
 
     function copyClientUrl(userName) {
         const url = `${window.location.origin}${window.location.pathname}?user=${encodeURIComponent(userName)}`;
         navigator.clipboard.writeText(url);
-        alert("تم نسخ الرابط الثابت لـ " + userName);
+        alert("تم نسخ الرابط لـ " + userName);
     }
 
     function editClient(i) {
@@ -225,12 +205,12 @@
         ['name','phone','plan','pass','link','start','expiry'].forEach(id => document.getElementById('in-'+id).value = clients[i][id] || '');
     }
 
-    async function deleteClient(i) { if(confirm("هل أنت متأكد من حذف هذا المشترك؟")) { clients.splice(i,1); await syncToCloud(); renderClients(); } }
-    function openModal() { document.getElementById('editIndex').value = "-1"; document.getElementById('modal').style.display = 'flex'; document.getElementById('in-name').focus(); }
+    async function deleteClient(i) { if(confirm("حذف؟")) { clients.splice(i,1); await syncToCloud(); renderClients(); } }
+    function openModal() { document.getElementById('editIndex').value = "-1"; document.getElementById('modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function showLoading(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
     function copyTag(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert("تم النسخ!"); }
-    function copyClientLink() { navigator.clipboard.writeText(document.getElementById('v-link').href); alert("تم نسخ رابط المنصة"); }
+    function copyClientLink() { navigator.clipboard.writeText(document.getElementById('v-link').href); alert("تم النسخ!"); }
 
     init();
 </script>
