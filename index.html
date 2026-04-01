@@ -6,71 +6,104 @@
     <title>نظام إدارة اشتراكات Vultr</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; min-height: 100vh; align-items: center; }
-        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 450px; overflow: hidden; border: 1px solid #eee; display: none; }
+        :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; --whatsapp: #25d366; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; min-height: 100vh; align-items: flex-start; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 450px; overflow: hidden; border: 1px solid #eee; display: none; margin-bottom: 50px; }
         
-        /* تصميم صفحة العميل */
-        .client-header { background: var(--primary); color: white; padding: 30px; text-align: center; }
-        .client-header i { font-size: 3rem; }
-        .info-body { padding: 25px; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
-        .label { color: #888; font-size: 0.9rem; }
-        .value { font-weight: 600; color: #333; }
-        .timer-box { background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 12px; text-align: center; margin-top: 20px; }
+        /* صفحة العميل */
+        .client-header { background: var(--primary); color: white; padding: 25px; text-align: center; }
+        .client-header i { font-size: 2.5rem; margin-bottom: 10px; }
+        .info-body { padding: 20px; }
+        .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #edf2f7; }
+        .info-content { display: flex; flex-direction: column; flex-grow: 1; margin-right: 10px; }
+        .label { color: #888; font-size: 0.8rem; margin-bottom: 2px; }
+        .value { font-weight: 600; color: #333; font-size: 0.95rem; word-break: break-all; }
+        
+        .copy-btn { background: none; border: none; color: var(--primary); cursor: pointer; padding: 8px; font-size: 1.1rem; transition: 0.2s; }
+        .copy-btn:hover { color: #0056b3; transform: scale(1.1); }
+
+        .timer-box { background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 12px; text-align: center; margin: 15px 0; }
         .timer-val { display: block; font-weight: bold; color: #d84315; font-size: 1.3rem; margin-top: 5px; }
 
-        /* تصميم صفحة الإدارة (لك) */
+        /* أزرار التواصل */
+        .support-section { margin-top: 20px; border-top: 2px dashed #eee; padding-top: 20px; }
+        .btn-contact { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-bottom: 10px; transition: 0.3s; color: white; font-size: 0.9rem; }
+        .btn-wa { background: var(--whatsapp); }
+        .btn-channel { background: #0088cc; }
+        .btn-contact:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* صفحة الإدارة */
         .admin-box { padding: 30px; width: 100%; max-width: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .admin-box h2 { text-align: center; color: var(--primary); }
+        .admin-box h2 { text-align: center; color: var(--primary); margin-top: 0; }
         .form-group { margin-bottom: 12px; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 1rem; }
         .btn-gen { background: var(--success); color: white; }
-        .btn-copy { background: var(--primary); color: white; display: none; margin-top: 15px; }
-        #resultLink { word-break: break-all; font-size: 0.8rem; background: #eee; padding: 10px; border-radius: 5px; margin-top: 10px; display: none; }
+        .btn-copy-main { background: var(--primary); color: white; display: none; margin-top: 15px; }
+        #resultLink { word-break: break-all; font-size: 0.8rem; background: #f1f1f1; padding: 10px; border-radius: 5px; margin-top: 10px; display: none; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
 <div class="card" id="clientCard">
     <div class="client-header">
-        <i class="fas fa-user-shield"></i>
-        <h2 id="v-name">بيانات الاشتراك</h2>
+        <i class="fas fa-id-card"></i>
+        <h2 id="v-name" style="margin:0">بيانات الاشتراك</h2>
     </div>
     <div class="info-body">
-        <div class="info-row"><span class="label">الجوال:</span> <span class="value" id="v-phone"></span></div>
-        <div class="info-row"><span class="label">الاشتراك:</span> <span class="value" id="v-plan"></span></div>
-        <div class="info-row"><span class="label">كلمة السر:</span> <span class="value" id="v-pass"></span></div>
-        <div class="info-row"><span class="label">الرابط:</span> <span class="value"><a id="v-link" target="_blank">دخول المنصة</a></span></div>
+        <div class="info-row">
+            <div class="info-content"><span class="label">الجوال</span><span class="value" id="v-phone"></span></div>
+            <button class="copy-btn" onclick="copyText('v-phone')"><i class="far fa-copy"></i></button>
+        </div>
+        <div class="info-row">
+            <div class="info-content"><span class="label">نوع الاشتراك</span><span class="value" id="v-plan"></span></div>
+            <button class="copy-btn" onclick="copyText('v-plan')"><i class="far fa-copy"></i></button>
+        </div>
+        <div class="info-row">
+            <div class="info-content"><span class="label">كلمة السر</span><span class="value" id="v-pass"></span></div>
+            <button class="copy-btn" onclick="copyText('v-pass')"><i class="far fa-copy"></i></button>
+        </div>
+        <div class="info-row">
+            <div class="info-content"><span class="label">رابط المنصة</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary)">فتح الرابط</a></span></div>
+            <button class="copy-btn" onclick="copyLinkOnly()"><i class="fas fa-link"></i></button>
+        </div>
+
         <div class="timer-box">
-            <span class="label">الوقت المتبقي:</span>
+            <span class="label">متبقي على الانتهاء:</span>
             <span class="timer-val" id="timer">-- : -- : --</span>
+        </div>
+
+        <div class="support-section">
+            <a href="https://wa.me/966594393012" class="btn-contact btn-wa" target="_blank">
+                <i class="fab fa-whatsapp"></i> الدعم الفني (واتساب)
+            </a>
+            <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact btn-channel" target="_blank">
+                <i class="fas fa-bullhorn"></i> انضم لقناتنا على الواتساب
+            </a>
         </div>
     </div>
 </div>
 
 <div class="admin-box" id="adminBox" style="display:none;">
-    <h2><i class="fas fa-tools"></i> مولد اشتراكات العملاء</h2>
-    <div class="form-group"><input type="text" id="in-name" placeholder="اسم العميل"></div>
-    <div class="form-group"><input type="text" id="in-phone" placeholder="رقم الجوال"></div>
-    <div class="form-group"><input type="text" id="in-plan" placeholder="نوع الاشتراك"></div>
-    <div class="form-group"><input type="text" id="in-pass" placeholder="الرقم السري"></div>
-    <div class="form-group"><input type="text" id="in-link" value="https://vultr.com/login" placeholder="رابط الدخول"></div>
-    <div class="form-group"><label>تاريخ الانتهاء:</label><input type="date" id="in-expiry"></div>
+    <h2><i class="fas fa-user-plus"></i> إضافة مشترك جديد</h2>
+    <div class="form-group"><input type="text" id="in-name" placeholder="اسم المشترك"></div>
+    <div class="form-group"><input type="text" id="in-phone" placeholder="رقم جواله"></div>
+    <div class="form-group"><input type="text" id="in-plan" placeholder="باقة الاشتراك"></div>
+    <div class="form-group"><input type="text" id="in-pass" placeholder="كلمة المرور"></div>
+    <div class="form-group"><input type="text" id="in-link" value="https://vultr.com/login"></div>
+    <div class="form-group"><label>تاريخ نهاية الاشتراك:</label><input type="date" id="in-expiry"></div>
     
-    <button class="btn btn-gen" onclick="generate()">إنشاء الرابط وحفظ</button>
+    <button class="btn-action btn-gen" onclick="generate()">حفظ وإنشاء الرابط</button>
     <div id="resultLink"></div>
-    <button class="btn btn-copy" id="copyBtn" onclick="copy()">نسخ الرابط لإرساله</button>
+    <button class="btn-action btn-copy-main" id="copyBtn" onclick="copyMainLink()">نسخ الرابط النهائي</button>
 </div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
 
-    // الحالة الأولى: إذا كان الرابط يحتوي على "name" (عرض للعميل)
     if (params.has('name')) {
         document.getElementById('clientCard').style.display = 'block';
-        document.getElementById('v-name').innerText = params.get('name');
+        document.getElementById('v-name').innerText = "مرحباً: " + params.get('name');
         document.getElementById('v-phone').innerText = params.get('phone');
         document.getElementById('v-plan').innerText = params.get('plan');
         document.getElementById('v-pass').innerText = params.get('pass');
@@ -81,7 +114,7 @@
             const now = new Date().getTime();
             const diff = expiry - now;
             if (diff <= 0) {
-                document.getElementById('timer').innerText = "انتهى الاشتراك";
+                document.getElementById('timer').innerText = "منتهي";
             } else {
                 const d = Math.floor(diff / 86400000);
                 const h = Math.floor((diff % 86400000) / 3600000);
@@ -92,8 +125,20 @@
         }, 1000);
 
     } else {
-        // الحالة الثانية: الرابط فارغ (عرض صفحة التحكم لك)
         document.getElementById('adminBox').style.display = 'block';
+    }
+
+    // وظائف النسخ
+    function copyText(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text);
+        alert("تم نسخ: " + text);
+    }
+
+    function copyLinkOnly() {
+        const link = document.getElementById('v-link').href;
+        navigator.clipboard.writeText(link);
+        alert("تم نسخ رابط المنصة");
     }
 
     function generate() {
@@ -106,17 +151,15 @@
             link: encodeURIComponent(document.getElementById('in-link').value),
             expiry: document.getElementById('in-expiry').value
         };
-        
         const finalUrl = `${url}?name=${p.name}&phone=${p.phone}&plan=${p.plan}&pass=${p.pass}&link=${p.link}&expiry=${p.expiry}`;
-        
         document.getElementById('resultLink').innerText = finalUrl;
         document.getElementById('resultLink').style.display = 'block';
         document.getElementById('copyBtn').style.display = 'block';
     }
 
-    function copy() {
-        const text = document.getElementById('resultLink').innerText;
-        navigator.clipboard.writeText(text).then(() => alert("تم نسخ الرابط بنجاح!"));
+    function copyMainLink() {
+        navigator.clipboard.writeText(document.getElementById('resultLink').innerText);
+        alert("تم نسخ الرابط! أرسله الآن للعميل.");
     }
 </script>
 </body>
