@@ -10,84 +10,86 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; color: var(--text); }
         
         /* تصميم العداد الجمالي */
-        .timer-display { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .time-unit { background: white; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; min-width: 45px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .time-num { display: block; font-size: 1.1rem; font-weight: bold; color: var(--primary); line-height: 1; }
-        .time-lab { font-size: 0.65rem; color: #718096; margin-top: 2px; display: block; }
-        .expired { color: var(--danger) !important; font-weight: bold; padding: 10px; }
+        .timer-display { display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap; direction: ltr; }
+        .time-unit { background: white; padding: 8px 4px; border-radius: 8px; border: 1px solid #e2e8f0; min-width: 42px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
+        .time-num { display: block; font-size: 1rem; font-weight: bold; color: var(--primary); line-height: 1; }
+        .time-lab { font-size: 0.6rem; color: #718096; margin-top: 3px; display: block; font-weight: bold; }
+        .expired { color: var(--danger) !important; font-weight: bold; padding: 10px; font-size: 0.9rem; }
 
         /* واجهة العميل */
         .client-view { background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; max-width: 420px; overflow: hidden; display: none; align-self: center; border: 1px solid rgba(0,0,0,0.05); }
-        .client-header { background: linear-gradient(135deg, var(--primary), #0056b3); color: white; padding: 30px; text-align: center; }
-        .info-body { padding: 25px; }
-        .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #edf2f7; }
+        .client-header { background: linear-gradient(135deg, var(--primary), #0056b3); color: white; padding: 25px; text-align: center; }
+        .info-body { padding: 20px; }
+        .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #edf2f7; }
         .info-content { display: flex; flex-direction: column; }
-        .label { color: #64748b; font-size: 0.75rem; font-weight: bold; }
-        .value { font-weight: 600; color: #1e293b; font-size: 0.95rem; }
-        .copy-btn { background: white; border: 1px solid #e2e8f0; color: var(--primary); cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s; }
+        .label { color: #64748b; font-size: 0.7rem; font-weight: bold; }
+        .value { font-weight: 600; color: #1e293b; font-size: 0.9rem; }
+        .copy-btn { background: white; border: 1px solid #e2e8f0; color: var(--primary); cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: 0.2s; }
         .copy-btn:hover { background: var(--primary); color: white; }
         
-        .timer-section { background: #f1f5f9; padding: 20px; border-radius: 16px; text-align: center; margin: 20px 0; border: 1px solid #e2e8f0; }
-        .btn-contact { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 10px; color: white; transition: 0.3s; }
+        .timer-section { background: #f1f5f9; padding: 15px; border-radius: 16px; text-align: center; margin: 15px 0; border: 1px solid #e2e8f0; }
+        .btn-contact { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-bottom: 8px; color: white; transition: 0.3s; font-size: 0.85rem; }
 
         /* لوحة التحكم */
         .admin-panel { width: 100%; max-width: 1100px; display: none; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 20px 30px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .btn-add { background: var(--success); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .btn-add { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95rem; }
         
-        .clients-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px; }
-        .client-item { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; position: relative; }
-        .client-item h3 { margin: 0 0 15px 0; color: var(--primary); font-size: 1.25rem; }
-        .admin-dates { font-size: 0.8rem; background: #f8fafc; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+        .clients-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; }
+        .client-item { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; position: relative; }
+        .client-item h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.15rem; border-bottom: 1px solid #f8fafc; padding-bottom: 8px; }
+        .admin-dates { font-size: 0.75rem; background: #f8fafc; padding: 10px; border-radius: 10px; margin-bottom: 10px; color: #4a5568; line-height: 1.6; }
 
-        .actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-sm { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .actions { display: flex; gap: 8px; margin-top: 15px; }
+        .btn-sm { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .btn-edit { background: #f0f7ff; color: #007bff; }
         .btn-del { background: #fff1f2; color: #e11d48; }
         .btn-link { background: #f0fdf4; color: #16a34a; }
 
         /* النافذة المنبثقة */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
-        .modal-content { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 15px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { margin-bottom: 12px; }
         .form-group.full { grid-column: 1 / -1; }
-        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 6px; font-weight: bold; color: #475569; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 4px; font-weight: bold; color: #475569; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div id="clientView" class="client-view">
-    <div class="client-header"><i class="fas fa-shield-alt fa-3x"></i><h2 id="v-name" style="margin:15px 0 0 0"></h2></div>
+    <div class="client-header"><i class="fas fa-user-check fa-3x"></i><h2 id="v-name" style="margin:10px 0 0 0"></h2></div>
     <div class="info-body">
-        <div class="info-row"><div class="info-content"><span class="label">تاريخ البداية</span><span class="value" id="v-start"></span></div></div>
-        <div class="info-row"><div class="info-content"><span class="label">تاريخ النهاية</span><span class="value" id="v-end"></span></div></div>
+        <div class="info-row"><div class="info-content"><span class="label">تاريخ بداية الاشتراك</span><span class="value" id="v-start"></span></div></div>
+        <div class="info-row"><div class="info-content"><span class="label">تاريخ نهاية الاشتراك</span><span class="value" id="v-end"></span></div></div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
         <div class="info-row"><div class="info-content"><span class="label">اسم المستخدم</span><span class="value" id="v-plan"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div class="info-content"><span class="label">كلمة السر</span><span class="value" id="v-pass"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
-        <div class="info-row"><div class="info-content"><span class="label">رابط المنصة</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary); text-decoration:none;">اضغط للدخول</a></span></div><button class="copy-btn" onclick="copyClientLink()"><i class="fas fa-external-link-alt"></i></button></div>
+        <div class="info-row"><div class="info-content"><span class="label">رابط المنصة</span><span class="value"><a id="v-link" target="_blank" style="color:var(--primary); text-decoration:none;">دخول المنصة</a></span></div><button class="copy-btn" onclick="copyClientLink()"><i class="fas fa-external-link-alt"></i></button></div>
         
         <div class="timer-section">
-            <span class="label" style="display:block; margin-bottom:10px;">الوقت المتبقي لانتهاء الاشتراك</span>
+            <span class="label" style="display:block; margin-bottom:10px;">الوقت المتبقي لانتهاء صلاحية الاشتراك</span>
             <div id="timer" class="timer-display"></div>
         </div>
         
-        <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp)" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني المباشر</a>
-        <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact" style="background:#0088cc;" target="_blank"><i class="fas fa-paper-plane"></i> قناة التحديثات</a>
+        <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp)" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني</a>
+        <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact" style="background:#0088cc;" target="_blank"><i class="fas fa-bullhorn"></i> قناة المشتركين</a>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-panel">
     <div class="admin-header">
-        <h2 style="margin:0;"><i class="fas fa-user-gear" style="color:var(--primary)"></i> لوحة إدارة المشتركين</h2>
-        <button class="btn-add" onclick="openModal()"><i class="fas fa-plus-circle"></i> مشترك جديد</button>
+        <h2 style="margin:0; font-size: 1.4rem;"><i class="fas fa-tools" style="color:var(--primary)"></i> إدارة المشتركين</h2>
+        <button class="btn-add" onclick="openModal()"><i class="fas fa-plus-circle"></i> إضافة عميل</button>
     </div>
     <div id="clientsList" class="clients-list"></div>
 </div>
 
 <div id="modal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle" style="margin-top:0; color:var(--primary)">إضافة بيانات المشترك</h3>
+        <h3 id="modalTitle" style="margin-top:0; color:var(--primary)">بيانات المشترك الجديد</h3>
         <input type="hidden" id="editIndex">
         <div class="form-grid">
             <div class="form-group full"><label>اسم العميل</label><input type="text" id="in-name"></div>
@@ -98,9 +100,9 @@
             <div class="form-group"><label>تاريخ البداية</label><input type="date" id="in-start"></div>
             <div class="form-group"><label>تاريخ النهاية</label><input type="date" id="in-expiry"></div>
         </div>
-        <div style="display:flex; gap:12px; margin-top:20px;">
-            <button class="btn-add" onclick="saveClient()" style="flex:2">حفظ المشترك</button>
-            <button onclick="closeModal()" style="flex:1; border:none; border-radius:12px; cursor:pointer; font-weight:bold; background:#f1f5f9;">إلغاء</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-add" onclick="saveClient()" style="flex:2">حفظ البيانات</button>
+            <button onclick="closeModal()" style="flex:1; border:none; border-radius:10px; cursor:pointer; background:#f1f5f9;">إلغاء</button>
         </div>
     </div>
 </div>
@@ -120,7 +122,7 @@
         const mins = Math.floor(secs / 60);
         const hours = Math.floor(mins / 60);
         const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30.44); // متوسط أيام الشهر
+        const months = Math.floor(days / 30.44);
         const years = Math.floor(months / 12);
 
         return {
@@ -128,15 +130,18 @@
             شهر: months % 12,
             يوم: Math.floor(days % 30.44),
             ساعة: hours % 24,
-            دقيقة: mins % 60
+            دقيقة: mins % 60,
+            ثانية: secs % 60
         };
     }
 
     function getTimeHTML(timeObj) {
-        if (!timeObj) return `<span class="expired">انتهى الاشتراك</span>`;
-        return Object.entries(timeObj).map(([lab, val]) => `
+        if (!timeObj) return `<span class="expired">عذراً، الاشتراك منتهي</span>`;
+        // عرض الوحدات من الأكبر للأصغر
+        const order = ['سنة', 'شهر', 'يوم', 'ساعة', 'دقيقة', 'ثانية'];
+        return order.map(lab => `
             <div class="time-unit">
-                <span class="time-num">${val}</span>
+                <span class="time-num">${timeObj[lab]}</span>
                 <span class="time-lab">${lab}</span>
             </div>
         `).join('');
@@ -169,7 +174,8 @@
             <div class="client-item">
                 <h3>${c.name}</h3>
                 <div class="admin-dates">
-                    <div><b>البداية:</b> ${c.start} | <b>النهاية:</b> ${c.expiry}</div>
+                    <div><b>بداية:</b> ${c.start}</div>
+                    <div><b>نهاية:</b> ${c.expiry}</div>
                     <div><b>المستخدم:</b> ${c.plan}</div>
                 </div>
                 <div id="admin-timer-${i}" class="timer-display"></div>
@@ -200,7 +206,7 @@
             start: document.getElementById('in-start').value,
             expiry: document.getElementById('in-expiry').value
         };
-        if(!data.name || !data.expiry) return alert("أكمل البيانات");
+        if(!data.name || !data.expiry) return alert("يرجى اختيار التاريخ والاسم");
         if (idx === -1) clients.push(data); else clients[idx] = data;
         localStorage.setItem('myClients', JSON.stringify(clients));
         renderClients(); closeModal();
@@ -210,7 +216,7 @@
         const c = clients[i];
         const p = `?name=${encodeURIComponent(c.name)}&phone=${encodeURIComponent(c.phone)}&plan=${encodeURIComponent(c.plan)}&pass=${encodeURIComponent(c.pass)}&link=${encodeURIComponent(c.link)}&start=${c.start}&expiry=${c.expiry}`;
         navigator.clipboard.writeText(window.location.origin + window.location.pathname + p);
-        alert("تم نسخ رابط العميل بنجاح");
+        alert("تم نسخ الرابط بنجاح للمشترك: " + c.name);
     }
 
     function editClient(i) {
@@ -218,11 +224,11 @@
         document.getElementById('editIndex').value = i;
         ['name','phone','plan','pass','link','start','expiry'].forEach(id => document.getElementById('in-'+id).value = clients[i][id] || '');
     }
-    function deleteClient(i) { if(confirm("حذف المشترك؟")) { clients.splice(i,1); localStorage.setItem('myClients', JSON.stringify(clients)); renderClients(); } }
+    function deleteClient(i) { if(confirm("هل تريد حذف هذا المشترك نهائياً؟")) { clients.splice(i,1); localStorage.setItem('myClients', JSON.stringify(clients)); renderClients(); } }
     function openModal() { document.getElementById('editIndex').value = "-1"; document.getElementById('modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function copyTag(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert("تم النسخ!"); }
-    function copyClientLink() { navigator.clipboard.writeText(document.getElementById('v-link').href); alert("تم النسخ!"); }
+    function copyClientLink() { navigator.clipboard.writeText(document.getElementById('v-link').href); alert("تم نسخ رابط المنصة"); }
 </script>
 </body>
 </html>
