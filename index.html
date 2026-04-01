@@ -6,6 +6,7 @@
     <title>منصة المشتركين | عبدالعزيز الفيفي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* التنسيقات ثابتة كما هي في ملفك الأصلي */
         :root { --primary: #007bff; --success: #28a745; --bg: #f4f7f6; --whatsapp: #25d366; --channel: #008069; --danger: #dc3545; --text: #2d3748; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; color: var(--text); }
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; }
@@ -97,7 +98,7 @@
 <script>
     const BIN_ID = '69ccd25636566621a86b0b49'; 
     const API_KEY = '$2a$10$tF3fZ9rbdTzLIljwr83BlOtuLCKngwBUbeK9//NpVH8Mwkfh4GTmu';
-    let clients = [];
+    let fullData = { clients: [], apps: [] };
     const params = new URLSearchParams(window.location.search);
 
     async function init() {
@@ -105,7 +106,14 @@
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
             const data = await res.json();
-            clients = Array.isArray(data.record) ? data.record : [];
+            
+            // ذكاء اصطناعي لاستعادة البيانات: إذا كانت البيانات قديمة (مصفوفة فقط) نضعها في قسم المشتركين
+            if (Array.isArray(data.record)) {
+                fullData.clients = data.record;
+            } else {
+                fullData = data.record;
+            }
+
             const user = params.get('user');
             if (user) { loadClientView(decodeURIComponent(user)); } else { showAdminPanel(); }
         } catch (e) { alert("خطأ في الاتصال بالسحابة!"); }
@@ -118,14 +126,14 @@
             await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify(clients)
+                body: JSON.stringify(fullData)
             });
         } catch (e) { alert("فشلت المزامنة!"); }
         showLoading(false);
     }
 
     function loadClientView(userId) {
-        const c = clients.find(item => item.name === userId);
+        const c = fullData.clients.find(item => item.name === userId);
         if (!c) { document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h1>المشترك غير موجود</h1></div>"; return; }
         document.getElementById('clientView').style.display = 'block';
         document.getElementById('v-name').innerText = "مرحباً: " + c.name;
@@ -155,7 +163,7 @@
         document.getElementById('adminPanel').style.display = 'block';
         renderClients();
         setInterval(() => {
-            clients.forEach((c, i) => {
+            fullData.clients.forEach((c, i) => {
                 const el = document.getElementById(`admin-timer-${i}`);
                 if(el) el.innerHTML = getTimeHTML(calculateTime(c.expiry));
             });
@@ -164,7 +172,7 @@
 
     function renderClients() {
         const list = document.getElementById('clientsList');
-        list.innerHTML = clients.map((c, i) => `
+        list.innerHTML = fullData.clients.map((c, i) => `
             <div class="client-item">
                 <h3 style="color:var(--primary); margin:0;">${c.name}</h3>
                 <div style="background:#f8fafc; padding:10px; border-radius:10px; font-size:0.8rem; margin:10px 0;">
@@ -192,7 +200,7 @@
             expiry: document.getElementById('in-expiry').value
         };
         if(!data.name || !data.expiry) return alert("أكمل البيانات!");
-        if (idx === -1) clients.push(data); else clients[idx] = data;
+        if (idx === -1) fullData.clients.push(data); else fullData.clients[idx] = data;
         await syncToCloud(); renderClients(); closeModal();
     }
 
@@ -203,10 +211,10 @@
 
     function editClient(i) {
         openModal(); document.getElementById('editIndex').value = i;
-        ['name','phone','plan','pass','link','start','expiry'].forEach(id => document.getElementById('in-'+id).value = clients[i][id] || '');
+        ['name','phone','plan','pass','link','start','expiry'].forEach(id => document.getElementById('in-'+id).value = fullData.clients[i][id] || '');
     }
 
-    async function deleteClient(i) { if(confirm("حذف؟")) { clients.splice(i,1); await syncToCloud(); renderClients(); } }
+    async function deleteClient(i) { if(confirm("حذف؟")) { fullData.clients.splice(i,1); await syncToCloud(); renderClients(); } }
     function openModal() { document.getElementById('editIndex').value = "-1"; document.getElementById('modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function showLoading(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
@@ -216,5 +224,4 @@
     init();
 </script>
 </body>
-    </html>
-    
+</html>
