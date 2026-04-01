@@ -3,232 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الاشتراكات | Vultr Panel</title>
+    <title>تفاصيل الاشتراك</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #007bff; /* لون فولتشر */
-            --bg-body: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #777777;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 40px 20px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .main-title {
-            text-align: center;
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 40px;
-            font-weight: 800;
-        }
-
-        .clients-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 25px;
-        }
-
-        .client-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            border: 1px solid #eee;
-        }
-
-        .client-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .avatar-circle {
-            width: 45px;
-            height: 45px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .client-name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .info-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-        }
-
-        .info-row i {
-            width: 25px;
-            color: var(--primary-color);
-            margin-left: 10px;
-            text-align: center;
-        }
-
-        .info-label {
-            color: var(--text-muted);
-            min-width: 100px;
-        }
-
-        .info-value {
-            font-weight: 600;
-            flex-grow: 1;
-        }
-
-        .footer-action {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #eee;
-            text-align: center;
-        }
-
-        .countdown-timer {
-            background: #fff8e1;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #ffe082;
-            margin-top: 15px;
-        }
-
-        .timer-text {
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            color: #d84315;
-            font-size: 1.1rem;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: #e1f5fe;
-            color: #0288d1;
-            float: left;
-        }
-
-        .expired { background: #ffebee; color: #c62828; }
-
-        a { color: var(--primary-color); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        :root { --primary: #007bff; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 40px 20px; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; overflow: hidden; border: 1px solid #eee; }
+        .header { background: var(--primary); color: white; padding: 30px; text-align: center; }
+        .header i { font-size: 3rem; margin-bottom: 10px; }
+        .body { padding: 25px; }
+        .item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+        .label { color: #888; font-size: 0.9rem; }
+        .value { font-weight: 600; color: #333; }
+        .timer-box { background: #fff5f5; border: 1px solid #fed7d7; padding: 15px; border-radius: 12px; text-align: center; margin-top: 20px; }
+        .timer-val { display: block; font-weight: bold; color: #c53030; font-size: 1.2rem; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 class="main-title">لوحة تحكم المشتركين</h1>
-    
-    <div class="clients-grid" id="clientsList">
+<div class="card" id="mainCard" style="display:none;">
+    <div class="header">
+        <i class="fas fa-shield-check"></i>
+        <h2 id="view-name">جاري التحميل...</h2>
+    </div>
+    <div class="body">
+        <div class="item"><span class="label">رقم الجوال:</span> <span class="value" id="view-phone">-</span></div>
+        <div class="item"><span class="label">نوع الاشتراك:</span> <span class="value" id="view-plan">-</span></div>
+        <div class="item"><span class="label">كلمة السر:</span> <span class="value" id="view-pass">-</span></div>
+        <div class="item"><span class="label">رابط الدخول:</span> <span class="value"><a id="view-link" href="#" target="_blank">اضغط هنا</a></span></div>
+        
+        <div class="timer-box">
+            <span class="label">متبقي على نهاية الاشتراك:</span>
+            <span class="timer-val" id="timer">-- : -- : --</span>
         </div>
+    </div>
 </div>
 
 <script>
-    const clients = [
-        {
-            name: "عبدالعزيز الفيفي",
-            phone: "050XXXXXXX",
-            plan: "Premium Vultr Cloud",
-            pass: "Vtr@2026",
-            link: "https://vultr.com",
-            expiry: "2026-05-15T23:59:59"
-        },
-        {
-            name: "سعد بن محمد",
-            phone: "055XXXXXXX",
-            plan: "Standard Instance",
-            pass: "Saad#99",
-            link: "https://vultr.com",
-            expiry: "2026-04-05T10:00:00"
-        }
-    ];
+    // وظيفة لقراءة البيانات من الرابط (URL)
+    const params = new URLSearchParams(window.location.search);
+    
+    if(params.has('name')) {
+        document.getElementById('mainCard').style.display = 'block';
+        document.getElementById('view-name').innerText = params.get('name');
+        document.getElementById('view-phone').innerText = params.get('phone');
+        document.getElementById('view-plan').innerText = params.get('plan');
+        document.getElementById('view-pass').innerText = params.get('pass');
+        document.getElementById('view-link').href = params.get('link');
 
-    function renderClients() {
-        const list = document.getElementById('clientsList');
-        list.innerHTML = clients.map((c, i) => `
-            <div class="client-card">
-                <div class="card-header">
-                    <div class="avatar-circle"><i class="fas fa-user"></i></div>
-                    <div>
-                        <p class="client-name">${c.name}</p>
-                        <span class="status-badge" id="status-${i}">نشط</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="info-row"><i class="fas fa-phone"></i> <span class="info-label">الجوال:</span> <span class="info-value">${c.phone}</span></div>
-                    <div class="info-row"><i class="fas fa-server"></i> <span class="info-label">الاشتراك:</span> <span class="info-value">${c.plan}</span></div>
-                    <div class="info-row"><i class="fas fa-lock"></i> <span class="info-label">كلمة السر:</span> <span class="info-value"><code>${c.pass}</code></span></div>
-                    <div class="info-row"><i class="fas fa-external-link-alt"></i> <span class="info-label">الرابط:</span> <span class="info-value"><a href="${c.link}" target="_blank">فتح الحساب</a></span></div>
-                    
-                    <div class="countdown-timer">
-                        <span style="font-size: 0.85rem; color: #555;">الوقت المتبقي:</span>
-                        <span class="timer-text" id="timer-${i}">...</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function updateTimers() {
-        clients.forEach((c, i) => {
-            const timerEl = document.getElementById(`timer-${i}`);
-            const statusEl = document.getElementById(`status-${i}`);
-            const diff = new Date(c.expiry).getTime() - new Date().getTime();
-
-            if (diff <= 0) {
-                timerEl.innerHTML = "منتهي";
-                statusEl.innerHTML = "غير نشط";
-                statusEl.classList.add('expired');
+        // العداد التنازلي
+        const expiryDate = new Date(params.get('expiry')).getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = expiryDate - now;
+            if (diff < 0) {
+                document.getElementById('timer').innerText = "انتهى الاشتراك";
             } else {
                 const d = Math.floor(diff / 86400000);
                 const h = Math.floor((diff % 86400000) / 3600000);
                 const m = Math.floor((diff % 3600000) / 60000);
                 const s = Math.floor((diff % 60000) / 1000);
-                timerEl.innerHTML = `${d} يوم و ${h}:${m}:${s}`;
+                document.getElementById('timer').innerText = `${d} يوم و ${h}:${m}:${s}`;
             }
-        });
+        }, 1000);
+    } else {
+        document.body.innerHTML = "<h2>خطأ: لا توجد بيانات لهذا الرابط</h2>";
     }
-
-    renderClients();
-    setInterval(updateTimers, 1000);
-    updateTimers();
 </script>
-
 </body>
 </html>
