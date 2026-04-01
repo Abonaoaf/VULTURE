@@ -55,7 +55,6 @@
         <div class="info-row"><div><span class="label">الجوال</span><br><span id="v-phone" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-phone')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div><span class="label">اسم المستخدم</span><br><span id="v-plan" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-plan')"><i class="far fa-copy"></i></button></div>
         <div class="info-row"><div><span class="label">كلمة السر</span><br><span id="v-pass" class="value"></span></div><button class="copy-btn" onclick="copyTag('v-pass')"><i class="far fa-copy"></i></button></div>
-        
         <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
             <span class="label">رابط الاشتراك (للنسخ)</span>
             <div style="display: flex; width: 100%; align-items: center; justify-content: space-between; background: #fff; padding: 5px; border-radius: 8px; border: 1px dashed #cbd5e1;">
@@ -63,28 +62,21 @@
                 <button class="copy-btn" onclick="copyClientLink()"><i class="fas fa-copy"></i></button>
             </div>
         </div>
-        
         <div class="timer-section"><span class="label">الوقت المتبقي للانتهاء</span><div id="timer" class="timer-display"></div></div>
-        
-        <a href="apps.html" class="btn-contact" style="background: #4338ca; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);"><i class="fas fa-th-large"></i> صفحة تحميل التطبيقات</a>
-
+        <a href="apps.html" class="btn-contact" style="background: #4338ca; border: 2px solid #fff;"><i class="fas fa-th-large"></i> صفحة تحميل التطبيقات</a>
         <a href="https://wa.me/966594393012" class="btn-contact" style="background:var(--whatsapp);" target="_blank"><i class="fab fa-whatsapp"></i> الدعم الفني المباشر</a>
         <a href="https://whatsapp.com/channel/0029VaFYcHcAO7RGw0O0QM1E" class="btn-contact" style="background:var(--channel);" target="_blank"><i class="fas fa-bullhorn"></i> تابعنا على قناة قبل الحدث </a>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-panel">
-    <div class="admin-header">
-        <h2><i class="fas fa-cloud-upload-alt"></i> الإدارة السحابية</h2>
-        <button class="btn-add" onclick="openModal()"><i class="fas fa-plus"></i> إضافة مشترك</button>
-    </div>
+    <div class="admin-header"><h2><i class="fas fa-cloud-upload-alt"></i> الإدارة السحابية</h2><button class="btn-add" onclick="openModal()"><i class="fas fa-plus"></i> إضافة مشترك</button></div>
     <div id="clientsList" class="clients-list"></div>
 </div>
 
 <div id="modal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">بيانات المشترك</h3>
-        <input type="hidden" id="editIndex">
+        <h3 id="modalTitle">بيانات المشترك</h3><input type="hidden" id="editIndex">
         <div class="form-grid">
             <div class="form-group full"><label>اسم العميل</label><input type="text" id="in-name"></div>
             <div class="form-group"><label>رقم الجوال</label><input type="text" id="in-phone"></div>
@@ -94,32 +86,25 @@
             <div class="form-group"><label>تاريخ البداية</label><input type="date" id="in-start"></div>
             <div class="form-group"><label>تاريخ النهاية</label><input type="date" id="in-expiry"></div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-add" onclick="saveClient()" style="flex:2">حفظ ومزامنة</button>
-            <button onclick="closeModal()" style="flex:1; border:none; background:#eee; cursor:pointer; border-radius:10px;">إلغاء</button>
-        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-add" onclick="saveClient()" style="flex:2">حفظ ومزامنة</button><button onclick="closeModal()" style="flex:1; border:none; background:#eee; cursor:pointer; border-radius:10px;">إلغاء</button></div>
     </div>
 </div>
 
 <script>
     const BIN_ID = '69ccd25636566621a86b0b49'; 
     const API_KEY = '$2a$10$tF3fZ9rbdTzLIljwr83BlOtuLCKngwBUbeK9//NpVH8Mwkfh4GTmu';
-
     let clients = [];
     const params = new URLSearchParams(window.location.search);
 
     async function init() {
         showLoading(true);
         try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': API_KEY }
-            });
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
             const data = await res.json();
-            // العودة للطريقة الأصلية لقراءة البيانات لضمان عدم حدوث خطأ
             clients = Array.isArray(data.record) ? data.record : [];
             const user = params.get('user');
             if (user) { loadClientView(decodeURIComponent(user)); } else { showAdminPanel(); }
-        } catch (e) { alert("خطأ في السحابة!"); }
+        } catch (e) { alert("خطأ في الاتصال بالسحابة!"); }
         showLoading(false);
     }
 
@@ -165,12 +150,23 @@
     function showAdminPanel() {
         document.getElementById('adminPanel').style.display = 'block';
         renderClients();
+        setInterval(() => {
+            clients.forEach((c, i) => {
+                const el = document.getElementById(`admin-timer-${i}`);
+                if(el) el.innerHTML = getTimeHTML(calculateTime(c.expiry));
+            });
+        }, 1000);
     }
 
     function renderClients() {
-        document.getElementById('clientsList').innerHTML = clients.map((c, i) => `
+        const list = document.getElementById('clientsList');
+        list.innerHTML = clients.map((c, i) => `
             <div class="client-item">
                 <h3 style="color:var(--primary); margin:0;">${c.name}</h3>
+                <div style="background:#f8fafc; padding:10px; border-radius:10px; font-size:0.8rem; margin:10px 0;">
+                    <b>النهاية:</b> ${c.expiry}<br><b>الجوال:</b> ${c.phone}
+                </div>
+                <div id="admin-timer-${i}" class="timer-display" style="transform: scale(0.8);"></div>
                 <div class="actions">
                     <button class="btn-sm btn-link" onclick="copyClientUrl('${c.name}')"><i class="fas fa-link"></i> الرابط الثابت</button>
                     <button class="btn-sm btn-edit" onclick="editClient(${i})"><i class="fas fa-edit"></i></button>
@@ -191,13 +187,14 @@
             start: document.getElementById('in-start').value,
             expiry: document.getElementById('in-expiry').value
         };
+        if(!data.name || !data.expiry) return alert("أكمل البيانات!");
         if (idx === -1) clients.push(data); else clients[idx] = data;
         await syncToCloud(); renderClients(); closeModal();
     }
 
     function copyClientUrl(userName) {
         const url = `${window.location.origin}${window.location.pathname}?user=${encodeURIComponent(userName)}`;
-        navigator.clipboard.writeText(url); alert("تم نسخ رابط المشترك");
+        navigator.clipboard.writeText(url); alert("تم نسخ الرابط");
     }
 
     function editClient(i) {
